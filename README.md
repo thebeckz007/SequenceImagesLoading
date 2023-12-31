@@ -1,8 +1,5 @@
 # Demo Sequence Images Loading
-This is a demo of sequence images loading. 
-This project is the showcase of MVVM architecture, following SOLID principles, SwiftUI, SwiftCombine, GCD and how to integrate UIKit to SwiftUI.
-
-<img src="Screenshots/demo.gif" width="300"/>
+As a developer, We'd like to develop a custom UIView as sequence images loading view.
 
 # Why to build Sequence Images Loading module
 ## The prolem 1
@@ -21,25 +18,84 @@ Reference: iOS memory deep dive in WWDC 2018 https://developer.apple.com/videos/
 # Features 
 - Load sequence images as progress bar.
 - Aniamate updated values.
-
-# Backlogs
-- Move to Swift Package Manager. 
     
 # Techniques
-- SwiftUI: to develop User Interfaces
-- Integrate UIKit to SwiftUI
-- SwiftCombine: to bind data
+- UIKit
 - Grand central Dispatch (GCD): to multithread 
-- MVVM architecture: develop application
-- Quick, Nimble framework: to write UnitTest
 - Follow SOLID principles
 
 ## Environment
 - XCode 15.0 ++
-- iOS 17 ++
+- iOS 13 ++
 
-## How to run
-To run Unit-test, we need to install some libraries from Swift Packages Manager:
-- Quick
-- Nimble
-- View Inspector [Github page](https://github.com/nalexn/ViewInspector)
+## How to use
+### For UIKit
+```
+import SequenceImagesLoading
+
+// init sequence images loading instance
+// declare image file name and image bundle name which bundle these images were stored
+let strImageFileName = "ks_activity_seq_"
+let strImageBundleName = "Assets_Katespade_Activity"
+
+var arrImageFiles: [String] = [String]()
+for idx in 0...72 {
+    let strFileName = strImageFileName + String.stringFromInt(idx, numberZeroChar: 3)
+    arrImageFiles.append(strFileName)
+}
+    
+let seqImagesView = SequenceImagesLoading(sequenceImageFileNames: arrImageFiles, imageType: .png, inBundleName: strImageBundleName)
+
+// start aniamation
+seqImagesView.startAnimation(duration: numPercentage) { _ in
+}
+```
+
+### For SwiftUI
+```
+import SequenceImagesLoading
+
+// MARK: SequenceImagesLoadingView
+/// Contruct SequenceImagesLoadingView
+struct SequenceImagesLoadingView : View {
+    @Binding var numPercentage: TimeInterval
+    var body: some View {
+        return SequenceImagesLoadingUIImageView(numPercentage: $numPercentage)
+    }
+}
+
+// MARK: SequenceImagesLoadingUIImageView
+// integrate SequenceImagesLoading as UIImageView in UIKit to SequenceImagesLoadingView as Image in SwiftUI
+// Conforming to UIViewRepresentable protocol
+struct SequenceImagesLoadingUIImageView: UIViewRepresentable {
+    typealias UIViewType = SequenceImagesLoading
+    @Binding var numPercentage: TimeInterval
+    
+    // declare image file name and image bundle name which bundle these images were stored
+    let strImageFileName = "ks_activity_seq_"
+    let strImageBundleName = "Assets_Katespade_Activity"
+
+    func makeUIView(context: Context) -> SequenceImagesLoading {
+        var arrImageFiles: [String] = [String]()
+        for idx in 0...72 {
+            let strFileName = strImageFileName + String.stringFromInt(idx, numberZeroChar: 3)
+            arrImageFiles.append(strFileName)
+        }
+        
+        let result = SequenceImagesLoading(sequenceImageFileNames: arrImageFiles, imageType: .png, inBundleName: strImageBundleName)
+        
+        // enable auto resize image
+        result.setContentCompressionResistancePriority(UILayoutPriority.defaultLow, for: .horizontal)
+        result.setContentCompressionResistancePriority(UILayoutPriority.defaultLow, for: .vertical)
+        
+        return result
+    }
+    
+    func updateUIView(_ uiView: SequenceImagesLoading, context: Context) {
+        uiView.startAnimation(duration: numPercentage) { _ in
+        }
+    }
+}
+```
+
+
