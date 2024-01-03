@@ -14,8 +14,8 @@ public struct SequenceImagesLoadingView: UIViewRepresentable {
     public typealias UIViewType = SequenceImagesLoading
     @Binding var duration: TimeInterval
     @Binding var repeatTimes: Int
-    let arrImageFiles: [SequenceImageFile]
-
+    public let arrImageFiles: [SequenceImageFile]
+    
     public func makeUIView(context: Context) -> SequenceImagesLoading {
         let view = SequenceImagesLoading(sequenceImageFiles: arrImageFiles)
         
