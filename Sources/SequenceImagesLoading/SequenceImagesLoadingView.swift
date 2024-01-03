@@ -10,13 +10,13 @@ import SwiftUI
 
 // MARK: SequenceImagesLoadingView
 // integrate SequenceImagesLoading as an UIImageView in UIKit to SequenceImagesLoadingView as a View in SwiftUI
-struct SequenceImagesLoadingView: UIViewRepresentable {
-    typealias UIViewType = SequenceImagesLoading
+public struct SequenceImagesLoadingView: UIViewRepresentable {
+    public typealias UIViewType = SequenceImagesLoading
     @Binding var duration: TimeInterval
     @Binding var repeatTimes: Int
     private let arrImageFiles: [SequenceImageFile]
 
-    func makeUIView(context: Context) -> SequenceImagesLoading {
+    public func makeUIView(context: Context) -> SequenceImagesLoading {
         let view = SequenceImagesLoading(sequenceImageFiles: arrImageFiles)
         
         // enable auto resize image
@@ -26,7 +26,7 @@ struct SequenceImagesLoadingView: UIViewRepresentable {
         return view
     }
     
-    func updateUIView(_ view: SequenceImagesLoading, context: Context) {
+    public func updateUIView(_ view: SequenceImagesLoading, context: Context) {
         view.startAnimation(duration: self.duration, repeatTimes: self.repeatTimes) { _ in
         }
     }
