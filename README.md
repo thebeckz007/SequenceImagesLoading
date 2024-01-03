@@ -55,45 +55,24 @@ seqImagesView.startAnimation(duration: numPercentage) { _ in
 ```
 import SequenceImagesLoading
 
-// MARK: SequenceImagesLoadingView
-/// Contruct SequenceImagesLoadingView
-struct SequenceImagesLoadingView : View {
+/// Contruct SequenceImagesView
+struct SequenceImagesView : View {
     @Binding var numPercentage: TimeInterval
-    var body: some View {
-        return SequenceImagesLoadingUIImageView(numPercentage: $numPercentage)
-    }
-}
-
-// MARK: SequenceImagesLoadingUIImageView
-// integrate SequenceImagesLoading as UIImageView in UIKit to SequenceImagesLoadingView as Image in SwiftUI
-// Conforming to UIViewRepresentable protocol
-struct SequenceImagesLoadingUIImageView: UIViewRepresentable {
-    typealias UIViewType = SequenceImagesLoading
-    @Binding var numPercentage: TimeInterval
+    @State var repeatTimes: Int = 0
     
-    // declare image file name and image bundle name which bundle these images were stored
-    let strImageFileName = "ks_activity_seq_"
-    let strImageBundleName = "Assets_Katespade_Activity"
-
-    func makeUIView(context: Context) -> SequenceImagesLoading {
-        var arrImageFiles: [String] = [String]()
+    var body: some View {
+        // declare image file name and image bundle name which bundle these images were stored
+        let strImageFileName = "ks_activity_seq_"
+        let strImageBundleName = "Assets_Katespade_Activity"
+        var arrImageFiles: [SequenceImageFile] = [SequenceImageFile]()
+        
         for idx in 0...72 {
             let strFileName = strImageFileName + String.stringFromInt(idx, numberZeroChar: 3)
-            arrImageFiles.append(strFileName)
+            arrImageFiles.append(SequenceImageFile(fileName: strFileName, inBundleName: strImageBundleName))
         }
         
-        let result = SequenceImagesLoading(sequenceImageFileNames: arrImageFiles, imageType: .png, inBundleName: strImageBundleName)
-        
-        // enable auto resize image
-        result.setContentCompressionResistancePriority(UILayoutPriority.defaultLow, for: .horizontal)
-        result.setContentCompressionResistancePriority(UILayoutPriority.defaultLow, for: .vertical)
-        
-        return result
-    }
-    
-    func updateUIView(_ uiView: SequenceImagesLoading, context: Context) {
-        uiView.startAnimation(duration: numPercentage) { _ in
-        }
+        return SequenceImagesLoadingView(duration: $numPercentage, repeatTimes: $repeatTimes, arrImageFiles: arrImageFiles)
+            .frame(width: 400.0, height: 400.0)
     }
 }
 ```
